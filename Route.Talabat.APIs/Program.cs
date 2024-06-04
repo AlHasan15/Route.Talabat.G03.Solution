@@ -17,6 +17,7 @@ namespace Route.Talabat.APIs
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			webApplicationBuilder.Services.AddEndpointsApiExplorer();
 			webApplicationBuilder.Services.AddSwaggerGen(); 
+
 			#endregion
 
 			var app = webApplicationBuilder.Build();
