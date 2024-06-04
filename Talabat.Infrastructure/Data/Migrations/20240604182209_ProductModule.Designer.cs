@@ -11,7 +11,7 @@ using Talabat.Infrastructure.Data;
 namespace Talabat.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20240411152229_ProductModule")]
+    [Migration("20240604182209_ProductModule")]
     partial class ProductModule
     {
         /// <inheritdoc />
@@ -19,7 +19,7 @@ namespace Talabat.Infrastructure.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
