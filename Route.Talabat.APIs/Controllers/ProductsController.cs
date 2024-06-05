@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Route.Talabat.APIs.Dtos;
 using Route.Talabat.APIs.Errors;
+using Route.Talabat.APIs.Helpers;
 using Talabat.Core.Entites;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Specifications;
@@ -12,36 +13,42 @@ namespace Route.Talabat.APIs.Controllers
 {
 	public class ProductsController : BaseApiController
 	{
-        private readonly IGenaricRepository<Product> productsRepo;
-        private readonly IMapper mapper;
-        private readonly IGenaricRepository<ProductBrand> brandsRepo;
-        private readonly IGenaricRepository<ProductCategory> categoriesRepo;
+		private readonly IGenaricRepository<Product> productsRepo;
+		private readonly IMapper mapper;
+		private readonly IGenaricRepository<ProductBrand> brandsRepo;
+		private readonly IGenaricRepository<ProductCategory> categoriesRepo;
 
-        public ProductsController(
-            IGenaricRepository<Product> productsRepo,
-            IMapper mapper,
-            IGenaricRepository<ProductBrand> brandsRepo,
-            IGenaricRepository<ProductCategory> categoriesRepo
-            )
+		public ProductsController(
+			IGenaricRepository<Product> productsRepo,
+			IMapper mapper,
+			IGenaricRepository<ProductBrand> brandsRepo,
+			IGenaricRepository<ProductCategory> categoriesRepo
+			)
         {
 			this.productsRepo = productsRepo;
 			this.mapper = mapper;
-            this.brandsRepo = brandsRepo;
-            this.categoriesRepo = categoriesRepo;
-        }
+			this.brandsRepo = brandsRepo;
+			this.categoriesRepo = categoriesRepo;
+		}
 
 		// / api/products
 		[HttpGet]
-        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts(string sort, int? brandId, int? categoryId)
-        {
-            var spec = new ProductWithBrandAndCategorySpecifications(sort, brandId, categoryId);
-            var products = await productsRepo.GetAllWithSpecAsync(spec);
+		public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts([FromQuery]ProductSpecParams specParams)
+		{
+			var spec = new ProductWithBrandAndCategorySpecifications(specParams);
+			var products = await productsRepo.GetAllWithSpecAsync(spec);
 
-            ///JsonResult result = new JsonResult(products);
-            ///OkResult result = new OkResult(products);
+			///JsonResult result = new JsonResult(products);
+			///OkResult result = new OkResult(products);
 
-            return Ok(mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
-        }
+			var data = mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
+
+			var countSpec = new ProductWithFilterationForCountSpecification(specParams);
+
+			var count = await productsRepo.GetCountAsync(countSpec);
+
+			return Ok(new Pagination<ProductToReturnDto>(specParams.PageIndex,specParams.PageSize,count, data));
+		}
 
 		[ProducesResponseType(typeof(ProductToReturnDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -58,18 +65,20 @@ namespace Route.Talabat.APIs.Controllers
 
 			return Ok(mapper.Map<Product,ProductToReturnDto>(products)); // 200 
 		}
-        [HttpGet("brands")]
-        public async Task<ActionResult<IEnumerable<ProductBrand>>> GetBrands()
-        {
-            var brands = await brandsRepo.GetAllAsync();
-            return Ok(brands);
-        }
 
-        [HttpGet("categories")]
-        public async Task<ActionResult<IEnumerable<ProductCategory>>> GetCategories()
-        {
-            var categories = await categoriesRepo.GetAllAsync();
-            return Ok(categories);
-        }
+		[HttpGet("brands")]
+		public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetBrands()
+		{
+			var brands = await brandsRepo.GetAllAsync();
+			return Ok(brands);
+		}
+
+		[HttpGet("categories")]
+		public async Task<ActionResult<IReadOnlyList<ProductCategory>>> GetCategories()
+		{
+			var categories = await categoriesRepo.GetAllAsync();
+			return Ok(categories);
+		}
+
     }
 }
