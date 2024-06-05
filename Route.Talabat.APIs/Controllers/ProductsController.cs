@@ -73,13 +73,12 @@ namespace Route.Talabat.APIs.Controllers
 			return Ok(brands);
 		}
 
-        [HttpGet("categories")]
-        public async Task<ActionResult<IEnumerable<ProductCategory>>> GetCategories()
-        {
-            var categories = await categoriesRepo.GetAllAsync();
-            return Ok(categories);
-        }
-
+		[HttpGet("categories")]
+		public async Task<ActionResult<IReadOnlyList<ProductCategory>>> GetCategories()
+		{
+			var categories = await categoriesRepo.GetAllAsync();
+			return Ok(categories);
+		}
 
     }
 }
