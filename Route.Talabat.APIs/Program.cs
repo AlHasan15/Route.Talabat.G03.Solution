@@ -7,6 +7,8 @@ using Talabat.Core.Entites;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Infrastructure;
 using Talabat.Infrastructure.Data;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Route.Talabat.APIs.Errors;
 
 namespace Route.Talabat.APIs
 {
