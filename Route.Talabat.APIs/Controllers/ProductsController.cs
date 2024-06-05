@@ -71,6 +71,5 @@ namespace Route.Talabat.APIs.Controllers
             var categories = await categoriesRepo.GetAllAsync();
             return Ok(categories);
         }
-
     }
 }
