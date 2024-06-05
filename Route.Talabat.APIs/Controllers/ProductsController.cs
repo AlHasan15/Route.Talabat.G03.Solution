@@ -72,5 +72,6 @@ namespace Route.Talabat.APIs.Controllers
             return Ok(categories);
         }
 
+
     }
 }
