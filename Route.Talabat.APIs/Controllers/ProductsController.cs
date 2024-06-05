@@ -32,16 +32,18 @@ namespace Route.Talabat.APIs.Controllers
 
 		// / api/products
 		[HttpGet]
-		public async Task<ActionResult<IEnumerable<ProductToReturnDto>>> GetProducts()
+        public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts()
+
+        public async Task<ActionResult<IEnumerable<ProductToReturnDto>>> GetProducts()
 		{
 			var spec = new ProductWithBrandAndCategorySpecifications();
 			var products = await productsRepo.GetAllWithSpecAsync(spec);
 
-			///JsonResult result = new JsonResult(products);
-			///OkResult result = new OkResult(products);
+            ///JsonResult result = new JsonResult(products);
+            ///OkResult result = new OkResult(products);
 
-			return Ok(mapper.Map<IEnumerable<Product>, IEnumerable<ProductToReturnDto>>(products));
-		}
+            return Ok(mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products));
+        }
 
 		[ProducesResponseType(typeof(ProductToReturnDto), StatusCodes.Status200OK)]
 		[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
