@@ -30,8 +30,9 @@ namespace Route.Talabat.APIs.Controllers
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Product>> GetProduct(int id)
 		{
-			var products = await productsRepo.GetAsync(id);
-
+            var spec = new ProductWithBrandAndCategorySpecifications(id);
+            var products = await productsRepo.GetWithSpecAsync(spec);
+            
 			if (products is null)
 			{
 				return NotFound( new {message = "Not found" , statsCode = 404}); // 404 
