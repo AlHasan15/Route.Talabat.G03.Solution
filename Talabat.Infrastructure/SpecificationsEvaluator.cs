@@ -20,13 +20,19 @@ namespace Talabat.Infrastructure
 			{
 				query = query.Where(spec.Criteria);
 			}
+            if (spec.OrderBy is not null) // p => p.name 
+                query = query.OrderBy(spec.OrderBy);
 
-			///query = _dbcontext.set<Product>().Where(p => p.id == 1);
-			/// includes 
-			/// 1. p => p.brand 
-			/// 2 p => p.category 
+            else if (spec.OrderByDesc is not null)
+                query = query.OrderByDescending(spec.OrderByDesc);
 
-			query = spec.Includes.Aggregate(query,(currentQuery, includeExpression) => currentQuery.Include(includeExpression));
+            ///query = _dbcontext.set<Product>().Where(p => p.id == 1);
+            /// includes 
+            /// 1. p => p.brand 
+            /// 2 p => p.category 
+			query = spec.Includes.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
+
+            query = spec.Includes.Aggregate(query,(currentQuery, includeExpression) => currentQuery.Include(includeExpression));
 
 			/// _dbcontext.set<Product>().Where(p => p.id == 1).Include(p => p.brand)
 			///_dbcontext.set<Product>().Where(p => p.id == 1).Include(p => p.brand).Include(p => p.category)
